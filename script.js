@@ -5,7 +5,8 @@ const Banner = document.querySelector('.app__image');
 const titulo = document.querySelector('.app__title');
 const botoes = document.querySelectorAll('.app__card-button');
 const musicaFocoInput = document.getElementById('alternar-musica');
-const musica = new Audio('sons/luna-rise-part-one.mp3');
+const startPauseButton = document.querySelector('#start-pause');
+const musica = new Audio('sons/Resident-Evil-1-Save-Room-Theme.ogg');
 musica.loop = true
 
 const focoBt = document.querySelector('.app__card-button--foco');
@@ -14,9 +15,10 @@ const longoBt = document.querySelector('.app__card-button--longo');
 
 const startButton = document.getElementById('start-pause');
 
-const duracaoFoco = 1500;
-const duracaoDescansoCurto = 300;
-const duracaoDescansoLongo = 900;
+let duracaoFoco = 1500;
+let duracaoDescansoCurto = 300;
+let duracaoDescansoLongo = 900;
+let intervaloId = null;
 
 musicaFocoInput.addEventListener('change', () => {
     if (musica.paused){
@@ -80,3 +82,26 @@ const alterarStatus = (contexto) => {
             break;
     }
 }
+
+const start = () => {
+    const pauseAudio = new Audio('sons/pause.mp3');
+    pauseAudio.play();
+
+    if (intervaloId) {
+        stop();
+        return;
+    }
+    intervaloId = setInterval(ContagemRegressivaFoco, 1000);
+}
+
+const stop = () => {
+    clearInterval(intervaloId);
+    intervaloId = null;
+} 
+
+const ContagemRegressivaFoco = () => {
+    duracaoFoco -= 1;
+    console.log(duracaoFoco);
+}
+
+startPauseButton.addEventListener('click', start);
