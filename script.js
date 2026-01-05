@@ -6,7 +6,14 @@ const titulo = document.querySelector('.app__title');
 const botoes = document.querySelectorAll('.app__card-button');
 const musicaFocoInput = document.getElementById('alternar-musica');
 const startPauseButton = document.querySelector('#start-pause');
+
+const startPauseText = document.querySelector('#start-pause span');
+const startPauseIcon = document.querySelector('#start-pause img');
+
+const timer = document.getElementById('timer');
+
 const musica = new Audio('sons/Resident-Evil-1-Save-Room-Theme.ogg');
+const gameOverSound = new Audio('sons/beep.mp3');
 musica.loop = true
 
 const focoBt = document.querySelector('.app__card-button--foco');
@@ -16,8 +23,6 @@ const longoBt = document.querySelector('.app__card-button--longo');
 const startButton = document.getElementById('start-pause');
 
 let duracaoFoco = 1500;
-let duracaoDescansoCurto = 300;
-let duracaoDescansoLongo = 900;
 let intervaloId = null;
 
 musicaFocoInput.addEventListener('change', () => {
@@ -29,18 +34,24 @@ musicaFocoInput.addEventListener('change', () => {
 })
 
 focoBt.addEventListener('click', () => {
+    duracaoFoco = 1500;
+
     alterarStatus('foco');
     alterarContesto(focoBt);
     focoBt.classList.add('active');
 })
 
 curtoBt.addEventListener('click', () => {
+    duracaoFoco = 300;
+
     alterarStatus('descanso-curto');
     alterarContesto(curtoBt);
     curtoBt.classList.add('active');
 })
 
 longoBt.addEventListener('click', () => {
+    duracaoFoco = 900;
+    
     alterarStatus('descanso-longo');
     alterarContesto(longoBt);
     longoBt.classList.add('active');
@@ -51,6 +62,8 @@ startButton.addEventListener('click', () => {
 })
 
 const alterarContesto = (contexto) => {
+    stop();
+    showTimer();
     botoes.forEach((contexto) => {
         contexto.classList.remove('active');
     })
@@ -91,17 +104,34 @@ const start = () => {
         stop();
         return;
     }
+    startPauseText.textContent = "Pausar";
+    startPauseIcon.setAttribute('src', 'imagens/pause.png');
     intervaloId = setInterval(ContagemRegressivaFoco, 1000);
 }
 
 const stop = () => {
+    startPauseText.textContent = "Começar";
+    startPauseIcon.setAttribute('src', 'imagens/play_arrow.png');
     clearInterval(intervaloId);
     intervaloId = null;
 } 
 
 const ContagemRegressivaFoco = () => {
+    if (duracaoFoco <= 0) {
+        stop();
+        gameOverSound.play();
+        return;
+    }
+
     duracaoFoco -= 1;
-    console.log(duracaoFoco);
+    showTimer();
+}
+
+const showTimer = () => {
+    const minutos = Math.floor(duracaoFoco / 60);
+    const segundos = duracaoFoco % 60;
+    timer.innerHTML = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
 }
 
 startPauseButton.addEventListener('click', start);
+showTimer();
