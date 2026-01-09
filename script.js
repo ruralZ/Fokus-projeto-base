@@ -57,10 +57,6 @@ longoBt.addEventListener('click', () => {
     longoBt.classList.add('active');
 })
 
-startButton.addEventListener('click', () => {
-    
-})
-
 const alterarContesto = (contexto) => {
     stop();
     showTimer();
@@ -125,12 +121,16 @@ const ContagemRegressivaFoco = () => {
 
     duracaoFoco -= 1;
     showTimer();
+    
 }
 
 const showTimer = () => {
     const minutos = Math.floor(duracaoFoco / 60);
     const segundos = duracaoFoco % 60;
-    timer.innerHTML = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+    const tempoFormatado = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+
+    timer.innerHTML = tempoFormatado
+    document.title = `${tempoFormatado} - Fokus`
 }
 
 startPauseButton.addEventListener('click', start);
